@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 public class CalificacionDTO {
     private Long id;
 
-    @NotNull(message = "El ID del alumno es obligatorio")
-    private Long idAlumno;
+    @NotNull(message = "El ID del estudiante es obligatorio")
+    private Long estudianteId;
 
     @NotNull(message = "El ID de la asignatura es obligatorio")
     private Long asignaturaId;
@@ -31,7 +31,7 @@ public class CalificacionDTO {
     public Calificacion toModel() {
         return Calificacion.builder()
                 .id(this.id)
-                .idAlumno(this.idAlumno)
+                .estudianteId(this.estudianteId)
                 .nota(this.nota)
                 .descripcion(this.descripcion)
                 .asignatura(Asignatura.builder().id(this.asignaturaId).build())
@@ -42,7 +42,7 @@ public class CalificacionDTO {
         if (c == null) return null;
         return new CalificacionDTO(
             c.getId(),
-            c.getIdAlumno(),
+            c.getEstudianteId(),
             c.getAsignatura() != null ? c.getAsignatura().getId() : null,
             c.getNota(),
             c.getDescripcion()

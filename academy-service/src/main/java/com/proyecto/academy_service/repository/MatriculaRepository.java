@@ -9,6 +9,5 @@ import com.proyecto.academy_service.model.Matricula;
 @Repository
 public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
     List<Matricula> findByCursoId(Long cursoId);
-
-    boolean existsByAlumnoIdAndCursoId(Long idAlumno, Long cursoId);
+    boolean existsByEstudianteIdAndCursoId(Long estudianteId, Long cursoId);
 }

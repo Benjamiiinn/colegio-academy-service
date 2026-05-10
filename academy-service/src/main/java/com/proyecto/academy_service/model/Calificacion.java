@@ -18,12 +18,15 @@ public class Calificacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long idAlumno;
+    @Column(name = "estudiante_id", nullable = false)
+    private Long estudianteId;
 
     @ManyToOne
     @JoinColumn(name = "asignatura_id", nullable = false)
     private Asignatura asignatura;
 
+    @Column(name = "nota", columnDefinition = "NUMERIC(3,1)")
     private Double nota;
+    
     private String descripcion;
 }

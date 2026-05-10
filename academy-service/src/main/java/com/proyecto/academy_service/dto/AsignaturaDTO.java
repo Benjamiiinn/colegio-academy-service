@@ -22,7 +22,7 @@ public class AsignaturaDTO {
     private String nombre;
 
     @NotNull(message = "El ID del docente es obligatorio")
-    private Long idDocente;
+    private Long docenteId;
 
     @NotNull(message = "El ID del curso es obligatorio")
     private Long cursoId;
@@ -30,13 +30,13 @@ public class AsignaturaDTO {
     public Asignatura toModel() {
         Curso cursoRef = new Curso();
         cursoRef.setId(this.cursoId);
-        return new Asignatura(id, nombre, idDocente, cursoRef);
+        return new Asignatura(id, nombre, docenteId, cursoRef);
     }
 
     public static AsignaturaDTO fromModel(Asignatura a) {
         if (a == null) return null;
 
         Long cId = (a.getCurso() != null) ? a.getCurso().getId() : null;
-        return new AsignaturaDTO(a.getId(), a.getNombre(), a.getIdDocente(), cId);
+        return new AsignaturaDTO(a.getId(), a.getNombre(), a.getDocenteId(), cId);
     }
 }

@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 public class MatriculaDTO {
     private Long id;
 
-    @NotNull(message = "El ID del alumno es obligatorio")
-    private Long idAlumno;
+    @NotNull(message = "El ID del estudiante es obligatorio")
+    private Long estudianteId;
 
     @NotNull(message = "El curso es obligatorio")
     private Long cursoId;
@@ -25,7 +25,7 @@ public class MatriculaDTO {
     public Matricula toModel() {
         return Matricula.builder()
                 .id(this.id)
-                .idAlumno(this.idAlumno)
+                .estudianteId(this.estudianteId)
                 .curso(Curso.builder().id(this.cursoId).build())
                 .build();
     }
@@ -34,7 +34,7 @@ public class MatriculaDTO {
         if (m == null) return null;
         return new MatriculaDTO(
             m.getId(), 
-            m.getIdAlumno(), 
+            m.getEstudianteId(), 
             m.getCurso() != null ? m.getCurso().getId() : null
         );
     }

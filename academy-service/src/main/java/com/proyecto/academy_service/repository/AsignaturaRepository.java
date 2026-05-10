@@ -9,5 +9,5 @@ import com.proyecto.academy_service.model.Asignatura;
 @Repository
 public interface AsignaturaRepository extends JpaRepository<Asignatura, Long> {
     List<Asignatura> findByCursoId(Long cursoId);
-    List<Asignatura> findByDocenteId(Long idDocente);
+    List<Asignatura> findByDocenteId(Long docenteId);
 }

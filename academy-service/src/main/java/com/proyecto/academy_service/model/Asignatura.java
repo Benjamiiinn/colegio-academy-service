@@ -19,10 +19,11 @@ public class Asignatura {
     private Long id;
 
     private String nombre;
-    private Long idDocente;
+
+    @Column(name = "docente_id", nullable = false)
+    private Long docenteId;
 
     @ManyToOne
     @JoinColumn(name = "curso_id", nullable = false)
     private Curso curso;
-
 }

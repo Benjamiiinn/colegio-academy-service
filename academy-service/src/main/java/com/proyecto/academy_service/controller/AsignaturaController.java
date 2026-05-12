@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.academy_service.dto.AsignaturaDTO;
+import com.proyecto.academy_service.exception.BusinessRuleException;
 import com.proyecto.academy_service.model.Asignatura;
 import com.proyecto.academy_service.service.AsignaturaService;
 
@@ -26,7 +28,14 @@ public class AsignaturaController {
     private final AsignaturaService asignaturaService;
 
     @PostMapping
-    public ResponseEntity<AsignaturaDTO> crearAsignatura(@Valid @RequestBody AsignaturaDTO dto) {
+    public ResponseEntity<AsignaturaDTO> crearAsignatura(
+            @RequestHeader(value = "X-User-Role", required = false) String rolUsuario,
+            @Valid @RequestBody AsignaturaDTO dto) {
+        
+        if (rolUsuario == null || (!rolUsuario.contains("ROLE_ADMIN"))) {
+            throw new BusinessRuleException("Acceso denegado: Solo los administradores pueden crear asignaturas.");
+        }
+        
         Asignatura asignatura = asignaturaService.crearAsignatura(dto.toModel());
         return ResponseEntity.ok(AsignaturaDTO.fromModel(asignatura));
     }

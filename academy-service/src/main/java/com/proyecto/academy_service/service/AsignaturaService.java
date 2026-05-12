@@ -35,7 +35,6 @@ public class AsignaturaService {
         .retrieve()
         .bodyToMono(Boolean.class)
         .block();
-
         if (Boolean.FALSE.equals(existeDocente)) {
             throw new ResourceNotFoundException("El docente con ID " + asignatura.getDocenteId() + " no existe.");
         }

@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.academy_service.dto.MatriculaDTO;
+import com.proyecto.academy_service.exception.BusinessRuleException;
 import com.proyecto.academy_service.model.Matricula;
 import com.proyecto.academy_service.service.MatriculaService;
 
@@ -26,7 +28,14 @@ public class MatriculaController {
     private final MatriculaService matriculaService;
 
     @PostMapping
-    public ResponseEntity<MatriculaDTO> matricular(@Valid @RequestBody MatriculaDTO dto) {
+    public ResponseEntity<MatriculaDTO> matricular(
+            @RequestHeader(value = "X-User-Role", required = false) String rolUsuario,
+            @Valid @RequestBody MatriculaDTO dto) {
+                
+        if (rolUsuario == null || (!rolUsuario.contains("ROLE_ADMIN"))) {
+            throw new BusinessRuleException("Acceso denegado: Solo los administradores pueden matricular alumnos.");
+        }
+
         Matricula matricula = matriculaService.matricularAlumno(dto.toModel());
         return ResponseEntity.ok(MatriculaDTO.fromModel(matricula));
     }

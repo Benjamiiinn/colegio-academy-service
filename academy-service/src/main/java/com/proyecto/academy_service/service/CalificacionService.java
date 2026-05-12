@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.proyecto.academy_service.exception.BusinessRuleException;
+import com.proyecto.academy_service.exception.ResourceNotFoundException;
 import com.proyecto.academy_service.model.Asignatura;
 import com.proyecto.academy_service.model.Calificacion;
 import com.proyecto.academy_service.repository.AsignaturaRepository;
@@ -24,7 +26,7 @@ public class CalificacionService {
     @Transactional
     public Calificacion registrarNota(Calificacion calificacion) {
         Asignatura asignatura = asignaturaRepository.findById(calificacion.getAsignatura().getId())
-                .orElseThrow(() -> new RuntimeException("Asignatura no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Asignatura no encontrada"));
 
         Long cursoId = asignatura.getCurso().getId();
         boolean estaMatriculado = matriculaRepository.existsByEstudianteIdAndCursoId(
@@ -33,11 +35,11 @@ public class CalificacionService {
         );
 
         if (!estaMatriculado) {
-            throw new RuntimeException("El alumno no pertenece al curso de esta asignatura.");
+            throw new BusinessRuleException("El alumno no pertenece al curso de esta asignatura.");
         }
 
         if (calificacion.getNota() < 1.0 || calificacion.getNota() > 7.0) {
-            throw new RuntimeException("La nota debe estar entre 1.0 y 7.0.");
+            throw new BusinessRuleException("La nota debe estar entre 1.0 y 7.0.");
         }
 
         calificacion.setAsignatura(asignatura);

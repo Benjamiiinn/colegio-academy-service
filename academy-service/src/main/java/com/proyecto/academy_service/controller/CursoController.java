@@ -24,7 +24,7 @@ public class CursoController {
     private final CursoService cursoService;
 
     @PostMapping
-    public ResponseEntity<CursoDTO> createCurso(@RequestBody CursoDTO dto) {
+    public ResponseEntity<CursoDTO> crearCurso(@RequestBody CursoDTO dto) {
         Curso curso = cursoService.crearCurso(dto.toModel());
         return ResponseEntity.ok().body(CursoDTO.fromModel(curso));
     }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.proyecto.academy_service.exception.ResourceNotFoundException;
 import com.proyecto.academy_service.model.Curso;
 import com.proyecto.academy_service.repository.CursoRepository;
 
@@ -29,6 +30,6 @@ public class CursoService {
     @Transactional(readOnly = true)
     public Curso buscarPorId(Long id) {
         return cursoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Curso no existe"));
+                .orElseThrow(() -> new ResourceNotFoundException("Curso no existe"));
     }
 }

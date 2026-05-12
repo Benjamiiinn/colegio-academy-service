@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.proyecto.academy_service.exception.ResourceNotFoundException;
 import com.proyecto.academy_service.model.Asignatura;
 import com.proyecto.academy_service.model.Curso;
 import com.proyecto.academy_service.repository.AsignaturaRepository;
@@ -36,11 +37,11 @@ public class AsignaturaService {
         .block();
 
         if (Boolean.FALSE.equals(existeDocente)) {
-            throw new RuntimeException("El docente con ID " + asignatura.getDocenteId() + " no existe.");
+            throw new ResourceNotFoundException("El docente con ID " + asignatura.getDocenteId() + " no existe.");
         }
 
         Curso curso = cursoRepository.findById(asignatura.getCurso().getId())
-                .orElseThrow(() -> new RuntimeException("Curso no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado"));
 
         asignatura.setCurso(curso);
         return asignaturaRepository.save(asignatura);

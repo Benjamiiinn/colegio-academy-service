@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.proyecto.academy_service.exception.BusinessRuleException;
+import com.proyecto.academy_service.exception.ResourceNotFoundException;
 import com.proyecto.academy_service.model.Curso;
 import com.proyecto.academy_service.model.Matricula;
 import com.proyecto.academy_service.repository.CursoRepository;
@@ -34,7 +36,7 @@ public class MatriculaService {
             .block();
         
         if (Boolean.FALSE.equals(existeEstudiante)) {
-            throw new RuntimeException("El estudiante ID " + matricula.getEstudianteId() + " no existe en el sistema.");
+            throw new ResourceNotFoundException("El estudiante ID " + matricula.getEstudianteId() + " no existe en el sistema.");
         }
 
         Curso curso = cursoRepository.findById(matricula.getCurso().getId())
@@ -42,7 +44,7 @@ public class MatriculaService {
 
         boolean yaMatriculado = matriculaRepository.existsByEstudianteIdAndCursoId(matricula.getEstudianteId(), curso.getId());
         if (yaMatriculado) {
-            throw new RuntimeException("El estudiante ya está matriculado en este curso.");
+            throw new BusinessRuleException("El estudiante ya está matriculado en este curso.");
         }
 
         matricula.setCurso(curso);

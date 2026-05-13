@@ -51,5 +51,13 @@ public class AsignaturaController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
     }
+
+    @GetMapping
+    public ResponseEntity<List<AsignaturaDTO>> listarTodas() {
+        List<AsignaturaDTO> lista = asignaturaService.listarTodas().stream()
+                .map(AsignaturaDTO::fromModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
     
 }

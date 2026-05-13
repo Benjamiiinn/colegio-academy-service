@@ -55,4 +55,9 @@ public class MatriculaService {
     public List<Matricula> listarAlumnosPorCurso(Long cursoId) {
         return matriculaRepository.findByCursoId(cursoId);
     }
+
+    @Transactional(readOnly = true)
+    public List<Matricula> listarTodas() {
+        return matriculaRepository.findAll();
+    }
 }

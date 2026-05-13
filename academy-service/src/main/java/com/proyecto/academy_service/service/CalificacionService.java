@@ -50,4 +50,9 @@ public class CalificacionService {
     public List<Calificacion> listarNotasPorEstudiante(Long estudianteId) {
         return calificacionRepository.findByEstudianteId(estudianteId);
     }
+
+    @Transactional(readOnly = true)
+    public List<Calificacion> listarTodas() {
+        return calificacionRepository.findAll();
+    }
 }

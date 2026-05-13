@@ -55,4 +55,9 @@ public class AsignaturaService {
     public List<Asignatura> listarPorCurso(Long cursoId) {
         return asignaturaRepository.findByCursoId(cursoId);
     }
+
+    @Transactional(readOnly = true)
+    public List<Asignatura> listarTodas() {
+        return asignaturaRepository.findAll();
+    }
 }

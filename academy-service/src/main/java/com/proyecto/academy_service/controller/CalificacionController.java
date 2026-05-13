@@ -52,4 +52,12 @@ public class CalificacionController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
     }
+
+    @GetMapping
+    public ResponseEntity<List<CalificacionDTO>> listarTodas() {
+        List<CalificacionDTO> lista = calificacionService.listarTodas().stream()
+                .map(CalificacionDTO::fromModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
 }

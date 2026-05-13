@@ -51,4 +51,12 @@ public class MatriculaController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
     }
+
+    @GetMapping
+    public ResponseEntity<List<MatriculaDTO>> listarTodas() {
+        List<MatriculaDTO> lista = matriculaService.listarTodas().stream()
+                .map(MatriculaDTO::fromModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
 }

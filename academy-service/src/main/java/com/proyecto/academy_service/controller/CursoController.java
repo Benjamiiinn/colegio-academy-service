@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,17 +23,19 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/cursos")
-@RequiredArgsConstructor    
+@RequiredArgsConstructor
 public class CursoController {
 
     private final CursoService cursoService;
 
     @PostMapping
-    public ResponseEntity<CursoDTO> crearCurso(
-            @RequestHeader(value = "X-User-Role", required = false) String rolUsuario,
-            @Valid @RequestBody CursoDTO dto) {
-        
-        if (rolUsuario == null ||  (!rolUsuario.contains("ROLE_ADMIN"))) {
+    public ResponseEntity<CursoDTO> crearCurso(@Valid @RequestBody CursoDTO dto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String roles = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        if (roles == null || (!roles.contains("ROLE_ADMIN"))) {
             throw new BusinessRuleException("Acceso denegado: Solo los administradores pueden crear cursos.");
         }
         Curso curso = cursoService.crearCurso(dto.toModel());

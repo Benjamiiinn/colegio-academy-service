@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,14 +30,16 @@ public class AsignaturaController {
     private final AsignaturaService asignaturaService;
 
     @PostMapping
-    public ResponseEntity<AsignaturaDTO> crearAsignatura(
-            @RequestHeader(value = "X-User-Role", required = false) String rolUsuario,
-            @Valid @RequestBody AsignaturaDTO dto) {
-        
-        if (rolUsuario == null || (!rolUsuario.contains("ROLE_ADMIN"))) {
+    public ResponseEntity<AsignaturaDTO> crearAsignatura(@Valid @RequestBody AsignaturaDTO dto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String roles = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        if (roles == null || (!roles.contains("ROLE_ADMIN"))) {
             throw new BusinessRuleException("Acceso denegado: Solo los administradores pueden crear asignaturas.");
         }
-        
+
         Asignatura asignatura = asignaturaService.crearAsignatura(dto.toModel());
         return ResponseEntity.ok(AsignaturaDTO.fromModel(asignatura));
     }

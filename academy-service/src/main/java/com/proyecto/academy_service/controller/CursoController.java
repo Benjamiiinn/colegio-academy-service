@@ -9,9 +9,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.proyecto.academy_service.dto.CursoDTO;
 import com.proyecto.academy_service.exception.BusinessRuleException;
@@ -48,6 +51,34 @@ public class CursoController {
                 .map(CursoDTO::fromModel)
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(lista);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CursoDTO> actualizarCurso(@PathVariable Long id, @Valid @RequestBody CursoDTO dto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String roles = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        if (roles == null || (!roles.contains("ROLE_ADMIN"))) {
+            throw new BusinessRuleException("Acceso denegado: Solo los administradores pueden modificar cursos.");
+        }
+        Curso curso = cursoService.actualizarCurso(id, dto.toModel());
+        return ResponseEntity.ok().body(CursoDTO.fromModel(curso));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarCurso(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String roles = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        if (roles == null || (!roles.contains("ROLE_ADMIN"))) {
+            throw new BusinessRuleException("Acceso denegado: Solo los administradores pueden eliminar cursos.");
+        }
+        cursoService.eliminarCurso(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,5 +60,35 @@ public class MatriculaController {
                 .map(MatriculaDTO::fromModel)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MatriculaDTO> actualizarMatricula(@PathVariable Long id, @Valid @RequestBody MatriculaDTO dto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String roles = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        if (roles == null || (!roles.contains("ROLE_ADMIN"))) {
+            throw new BusinessRuleException("Acceso denegado: Solo los administradores pueden modificar matriculas.");
+        }
+
+        Matricula matricula = matriculaService.actualizarMatricula(id, dto.toModel());
+        return ResponseEntity.ok(MatriculaDTO.fromModel(matricula));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarMatricula(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String roles = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        if (roles == null || (!roles.contains("ROLE_ADMIN"))) {
+            throw new BusinessRuleException("Acceso denegado: Solo los administradores pueden eliminar matriculas.");
+        }
+
+        matriculaService.eliminarMatricula(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,7 +42,8 @@ public class CalificacionController {
             throw new BusinessRuleException("Acceso denegado: Solo los docentes pueden registrar calificaciones.");
         }
 
-        Calificacion calificacion = calificacionService.registrarNota(dto.toModel());
+        Long docenteId = (Long) auth.getCredentials();
+        Calificacion calificacion = calificacionService.registrarNota(dto.toModel(), docenteId);
         return ResponseEntity.ok(CalificacionDTO.fromModel(calificacion));
     }
 
@@ -59,5 +62,55 @@ public class CalificacionController {
                 .map(CalificacionDTO::fromModel)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
+    }
+
+    @GetMapping("/mis-calificaciones")
+    public ResponseEntity<List<CalificacionDTO>> listarMisCalificaciones() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String roles = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        if (roles == null || (!roles.contains("ROLE_DOCENTE"))) {
+            throw new BusinessRuleException("Acceso denegado: Solo los docentes pueden ver sus calificaciones.");
+        }
+
+        Long docenteId = (Long) auth.getCredentials();
+        List<CalificacionDTO> lista = calificacionService.listarPorDocente(docenteId).stream()
+                .map(CalificacionDTO::fromModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CalificacionDTO> actualizarCalificacion(@PathVariable Long id, @Valid @RequestBody CalificacionDTO dto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String roles = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        if (roles == null || (!roles.contains("ROLE_DOCENTE"))) {
+            throw new BusinessRuleException("Acceso denegado: Solo los docentes pueden modificar calificaciones.");
+        }
+
+        Long docenteId = (Long) auth.getCredentials();
+        Calificacion calificacion = calificacionService.actualizarCalificacion(id, dto.toModel(), docenteId);
+        return ResponseEntity.ok(CalificacionDTO.fromModel(calificacion));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarCalificacion(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String roles = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        if (roles == null || (!roles.contains("ROLE_DOCENTE"))) {
+            throw new BusinessRuleException("Acceso denegado: Solo los docentes pueden eliminar calificaciones.");
+        }
+
+        Long docenteId = (Long) auth.getCredentials();
+        calificacionService.eliminarCalificacion(id, docenteId);
+        return ResponseEntity.noContent().build();
     }
 }

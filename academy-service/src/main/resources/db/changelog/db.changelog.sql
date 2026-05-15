@@ -45,3 +45,6 @@ INSERT INTO asignaturas (nombre, docente_id, curso_id) VALUES ('Matemáticas', 4
 INSERT INTO calificaciones (estudiante_id, asignatura_id, nota, descripcion) VALUES (2, 1, 6.5, 'Solemne 1');
 INSERT INTO calificaciones (estudiante_id, asignatura_id, nota, descripcion) VALUES (3, 1, 5.8, 'Solemne 1');
 INSERT INTO calificaciones (estudiante_id, asignatura_id, nota, descripcion) VALUES (2, 2, 7.0, 'Control Lectura');
+
+--changeset equipo:3
+ALTER TABLE calificaciones ADD COLUMN docente_id BIGINT NOT NULL DEFAULT 4;

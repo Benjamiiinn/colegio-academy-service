@@ -7,4 +7,5 @@ import com.proyecto.academy_service.model.Curso;
 @Repository
 public interface CursoRepository extends JpaRepository<Curso, Long> {
     boolean existsByNivelAndLetra(String nivel, String letra);
+    boolean existsByNivelAndLetraAndIdNot(String nivel, String letra, Long id);
 }

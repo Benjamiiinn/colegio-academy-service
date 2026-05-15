@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "asignaturas")
 @Data
@@ -26,4 +28,7 @@ public class Asignatura {
     @ManyToOne
     @JoinColumn(name = "curso_id", nullable = false)
     private Curso curso;
+
+    @OneToMany(mappedBy = "asignatura")
+    private List<Calificacion> calificaciones;
 }

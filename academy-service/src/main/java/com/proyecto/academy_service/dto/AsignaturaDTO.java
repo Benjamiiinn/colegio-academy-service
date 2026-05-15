@@ -30,7 +30,12 @@ public class AsignaturaDTO {
     public Asignatura toModel() {
         Curso cursoRef = new Curso();
         cursoRef.setId(this.cursoId);
-        return new Asignatura(id, nombre, docenteId, cursoRef);
+        return Asignatura.builder()
+                .id(this.id)
+                .nombre(this.nombre)
+                .docenteId(this.docenteId)
+                .curso(cursoRef)
+                .build();
     }
 
     public static AsignaturaDTO fromModel(Asignatura a) {

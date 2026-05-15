@@ -9,4 +9,5 @@ import com.proyecto.academy_service.model.Calificacion;
 public interface CalificacionRepository extends JpaRepository<Calificacion, Long> {
     List<Calificacion> findByEstudianteId(Long estudianteId);
     List<Calificacion> findByDocenteId(Long docenteId);
+    List<Calificacion> findByEstudianteIdAndAsignaturaId(Long estudianteId, Long asignaturaId);
 }

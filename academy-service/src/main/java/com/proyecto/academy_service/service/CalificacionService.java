@@ -62,6 +62,11 @@ public class CalificacionService {
         return calificacionRepository.findByDocenteId(docenteId);
     }
 
+    @Transactional(readOnly = true)
+    public List<Calificacion> listarPorEstudianteYAsignatura(Long estudianteId, Long asignaturaId) {
+        return calificacionRepository.findByEstudianteIdAndAsignaturaId(estudianteId, asignaturaId);
+    }
+
     @Transactional
     public Calificacion actualizarCalificacion(Long id, Calificacion calificacionActualizada, Long docenteIdAutenticado) {
         Calificacion calificacionExistente = calificacionRepository.findById(id)

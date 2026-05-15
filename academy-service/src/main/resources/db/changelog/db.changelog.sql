@@ -35,11 +35,11 @@ CREATE TABLE calificaciones (
 -- 1. Insertamos Cursos
 INSERT INTO cursos (nivel, letra) VALUES ('1 Medio', 'A'), ('1 Medio', 'B');
 
--- 2. Insertamos Matrículas (Pedrito ID 2 y Maria ID 3 al Curso 1)
-INSERT INTO matriculas (estudiante_id, curso_id) VALUES (2, 1), (3, 1);
+-- 2. Insertamos Matrículas (Estudiante 1 ID 3 y Estudiante 2 ID 4 al Curso 1)
+INSERT INTO matriculas (estudiante_id, curso_id) VALUES (3, 1), (4, 1);
 
--- 3. Insertamos Asignaturas (Docente ID 4)
-INSERT INTO asignaturas (nombre, docente_id, curso_id) VALUES ('Matemáticas', 4, 1), ('Lenguaje', 4, 1), ('Historia', 4, 2);
+-- 3. Insertamos Asignaturas (Docente ID 5)
+INSERT INTO asignaturas (nombre, docente_id, curso_id) VALUES ('Matemáticas', 5, 1), ('Lenguaje', 5, 1), ('Historia', 5, 1);
 
 -- 4. Insertamos Calificaciones
 INSERT INTO calificaciones (estudiante_id, asignatura_id, nota, descripcion) VALUES (2, 1, 6.5, 'Solemne 1');
@@ -47,4 +47,4 @@ INSERT INTO calificaciones (estudiante_id, asignatura_id, nota, descripcion) VAL
 INSERT INTO calificaciones (estudiante_id, asignatura_id, nota, descripcion) VALUES (2, 2, 7.0, 'Control Lectura');
 
 --changeset equipo:3
-ALTER TABLE calificaciones ADD COLUMN docente_id BIGINT NOT NULL DEFAULT 4;
+ALTER TABLE calificaciones ADD COLUMN docente_id BIGINT NOT NULL DEFAULT 5;

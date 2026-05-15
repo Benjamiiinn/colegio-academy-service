@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.academy_service.dto.CalificacionDTO;
@@ -77,6 +78,15 @@ public class CalificacionController {
 
         Long docenteId = (Long) auth.getCredentials();
         List<CalificacionDTO> lista = calificacionService.listarPorDocente(docenteId).stream()
+                .map(CalificacionDTO::fromModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+    }
+
+    @GetMapping(params = {"estudianteId", "asignaturaId"})
+    public ResponseEntity<List<CalificacionDTO>> listarPorEstudianteYAsignatura(
+            @RequestParam Long estudianteId, @RequestParam Long asignaturaId) {
+        List<CalificacionDTO> lista = calificacionService.listarPorEstudianteYAsignatura(estudianteId, asignaturaId).stream()
                 .map(CalificacionDTO::fromModel)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(lista);

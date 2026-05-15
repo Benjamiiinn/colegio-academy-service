@@ -29,4 +29,7 @@ public class Calificacion {
     private Double nota;
     
     private String descripcion;
+
+    @Column(name = "docente_id")
+    private Long docenteId;
 }

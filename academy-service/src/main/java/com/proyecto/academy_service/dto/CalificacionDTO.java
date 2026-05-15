@@ -28,6 +28,8 @@ public class CalificacionDTO {
     @NotNull(message = "La descripción es obligatoria")
     private String descripcion;
 
+    private Long docenteId;
+
     public Calificacion toModel() {
         return Calificacion.builder()
                 .id(this.id)
@@ -35,6 +37,7 @@ public class CalificacionDTO {
                 .nota(this.nota)
                 .descripcion(this.descripcion)
                 .asignatura(Asignatura.builder().id(this.asignaturaId).build())
+                .docenteId(this.docenteId)
                 .build();
     }
 
@@ -45,7 +48,8 @@ public class CalificacionDTO {
             c.getEstudianteId(),
             c.getAsignatura() != null ? c.getAsignatura().getId() : null,
             c.getNota(),
-            c.getDescripcion()
+            c.getDescripcion(),
+            c.getDocenteId()
         );
     }
 }

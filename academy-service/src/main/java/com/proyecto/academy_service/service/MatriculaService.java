@@ -60,4 +60,44 @@ public class MatriculaService {
     public List<Matricula> listarTodas() {
         return matriculaRepository.findAll();
     }
+
+    @Transactional
+    public Matricula actualizarMatricula(Long id, Matricula matriculaActualizada) {
+        Matricula matriculaExistente = matriculaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Matricula no encontrada con ID: " + id));
+
+        Boolean existeEstudiante = webClient.get()
+                .uri(String.format(userPath, matriculaActualizada.getEstudianteId()))
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .block();
+        if (Boolean.FALSE.equals(existeEstudiante)) {
+            throw new ResourceNotFoundException("El estudiante con ID " + matriculaActualizada.getEstudianteId() + " no existe.");
+        }
+
+        Curso curso = cursoRepository.findById(matriculaActualizada.getCurso().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado con ID: " + matriculaActualizada.getCurso().getId()));
+
+        if (matriculaActualizada.getEstudianteId() != null &&
+            !matriculaActualizada.getEstudianteId().equals(matriculaExistente.getEstudianteId())) {
+            boolean yaMatriculado = matriculaRepository.existsByEstudianteIdAndCursoId(
+                    matriculaActualizada.getEstudianteId(), curso.getId());
+            if (yaMatriculado) {
+                throw new BusinessRuleException("El estudiante ya está matriculado en este curso.");
+            }
+        }
+
+        matriculaExistente.setEstudianteId(matriculaActualizada.getEstudianteId());
+        matriculaExistente.setCurso(curso);
+
+        return matriculaRepository.save(matriculaExistente);
+    }
+
+    @Transactional
+    public void eliminarMatricula(Long id) {
+        Matricula matricula = matriculaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Matricula no encontrada con ID: " + id));
+
+        matriculaRepository.delete(matricula);
+    }
 }

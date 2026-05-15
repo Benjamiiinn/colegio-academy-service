@@ -66,8 +66,10 @@ public class JwtValidationFilter extends OncePerRequestFilter {
                             .map(SimpleGrantedAuthority::new)
                             .collect(Collectors.toList());
 
+                    Long userId = claims.get("userId", Long.class);
+                    
                     UsernamePasswordAuthenticationToken authToken = 
-                            new UsernamePasswordAuthenticationToken(email, null, authorities);
+                            new UsernamePasswordAuthenticationToken(email, userId, authorities);
                     
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }

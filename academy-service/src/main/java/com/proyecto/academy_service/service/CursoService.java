@@ -37,4 +37,40 @@ public class CursoService {
         return cursoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Curso no existe"));
     }
+
+    @Transactional
+    public Curso actualizarCurso(Long id, Curso cursoActualizado) {
+        Curso cursoExistente = cursoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado con ID: " + id));
+
+        boolean existeOtro = cursoRepository.existsByNivelAndLetraAndIdNot(
+                cursoActualizado.getNivel(),
+                cursoActualizado.getLetra(),
+                id
+        );
+
+        if (existeOtro) {
+            throw new BusinessRuleException("Ya existe un curso registrado como '" + 
+                    cursoActualizado.getNivel() + " " + cursoActualizado.getLetra() + "'.");
+        }
+
+        cursoExistente.setNivel(cursoActualizado.getNivel());
+        cursoExistente.setLetra(cursoActualizado.getLetra());
+        return cursoRepository.save(cursoExistente);
+    }
+
+    @Transactional
+    public void eliminarCurso(Long id) {
+        Curso curso = cursoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Curso no encontrado con ID: " + id));
+
+        boolean tieneAsignaturas = !curso.getAsignaturas().isEmpty();
+        boolean tieneMatriculas = !curso.getMatriculas().isEmpty();
+
+        if (tieneAsignaturas || tieneMatriculas) {
+            throw new BusinessRuleException("No se puede eliminar el curso porque tiene asignaturas o matriculas asociadas.");
+        }
+
+        cursoRepository.delete(curso);
+    }
 }

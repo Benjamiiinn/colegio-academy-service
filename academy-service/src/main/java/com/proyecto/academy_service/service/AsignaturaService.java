@@ -2,7 +2,6 @@ package com.proyecto.academy_service.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +14,15 @@ import com.proyecto.academy_service.model.Curso;
 import com.proyecto.academy_service.repository.AsignaturaRepository;
 import com.proyecto.academy_service.repository.CursoRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AsignaturaService {
 
-    @Autowired
-    private AsignaturaRepository asignaturaRepository;
-    @Autowired
-    private CursoRepository cursoRepository;
-    @Autowired
-    private WebClient webClient;
-    
+    private final AsignaturaRepository asignaturaRepository;
+    private final CursoRepository cursoRepository;
+    private final WebClient webClient;
 
     @Value("${api.user.exists}")
     private String userPath;

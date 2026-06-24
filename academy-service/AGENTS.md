@@ -168,9 +168,15 @@ Compilación multi-etapa: Maven 3.9.6-eclipse-temurin-21 (build) → eclipse-tem
 
 ## Integración con otros servicios
 
-- **user-service**: consulta `GET /api/v1/usuarios/{id}/exists` para validar docentes y estudiantes
+- **user-service**: consulta `GET /api/v1/usuarios/{id}/exists` para validar docentes y estudiantes, via `WebClient` con `baseUrl=lb://USER-SERVICE` (resuelto por Spring Cloud LoadBalancer contra Eureka)
+- **eureka-server**: este servicio se registra al arrancar (cliente Eureka) y consume a `user-service` via `lb://`
 - **api-gateway**: enrutado en `http://academy-service:9092`, rutas `/api/v1/cursos/**`, `/api/v1/asignaturas/**`, `/api/v1/matriculas/**`, `/api/v1/calificaciones/**`
 - **frontend**: páginas ADMIN para CRUD de cursos/asignaturas/matrículas/calificaciones, páginas DOCENTE para registro de notas
+
+## Perfiles de Spring
+
+- `default` (sin perfil): comportamiento normal, incluye `LiquibaseConfig` y BD obligatoria
+- `no-db`: pensado solo para entornos de demo/desarrollo donde no hay PostgreSQL disponible. Se activa con `--spring.profiles.active=no-db` y **deshabilita** `LiquibaseConfig` (anotada con `@Profile("!no-db")`). Hibernate igual requiere `spring.jpa.database-platform` y `spring.jpa.properties.hibernate.boot.allow_jdbc_metadata_access=false` para arrancar sin metadata JDBC real.
 
 ## JWT compartido
 

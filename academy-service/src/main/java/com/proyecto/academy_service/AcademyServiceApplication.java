@@ -14,8 +14,8 @@ public class AcademyServiceApplication {
 	}
 
 	@Bean
-	public WebClient webClient(WebClient.Builder builder, @Value("${api.user-service.base.url}") String baseUrl) {
-		return builder
+	public WebClient webClient(@Value("${api.user-service.base.url}") String baseUrl) {
+		return WebClient.builder()
 				.baseUrl(baseUrl)
 				.build();
 	}

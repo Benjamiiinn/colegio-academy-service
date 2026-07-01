@@ -48,3 +48,8 @@ INSERT INTO calificaciones (estudiante_id, asignatura_id, nota, descripcion) VAL
 
 --changeset equipo:3
 ALTER TABLE calificaciones ADD COLUMN docente_id BIGINT NOT NULL DEFAULT 5;
+
+--changeset equipo:4
+-- Fix: calificaciones con estudiante_id=2 apuntaban a Juan Perez (APODERADO),
+-- deberian apuntar a Susana Castle (ESTUDIANTE, id=4)
+UPDATE calificaciones SET estudiante_id = 4 WHERE estudiante_id = 2;
